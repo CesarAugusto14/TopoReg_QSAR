@@ -65,12 +65,9 @@ def gen_morganfp(file_list: list, output_path: str):
 
 
 
-def generate(args):
+def generate(path : str, out_path : str, descs : str):
     """
     """
-    path = args.path
-    out_path = args.output
-    descs = args.descriptors
 
     if isinstance(path, str):
         # print(type(path))

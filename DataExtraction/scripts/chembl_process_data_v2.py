@@ -13,12 +13,10 @@ import os
 from os.path import join as pj
 import numpy as np
 import pandas as pd
-from sklearn.model_selection import KFold
 
 
 from rdkit import Chem
-from rdkit.Chem.EnumerateStereoisomers import EnumerateStereoisomers, StereoEnumerationOptions
-import chembl_structure_pipeline  # conda install -c conda-forge chembl_structure_pipeline
+from rdkit.Chem.EnumerateStereoisomers import EnumerateStereoisomers
 from chembl_structure_pipeline import standardize_mol, get_parent_mol
 
 # PATH : target dir.
@@ -76,7 +74,15 @@ def process_target_df(df: pd.DataFrame) -> pd.DataFrame:
     # added 1/29/2022, remove duplicated SMILES
     df = df.drop_duplicates(subset='Smiles')
 
-    r_df = df[["Smiles", "Standard Type", "Standard Relation", "Standard Value", "Standard Units", "pChEMBL Value", "Assay ChEMBL ID", "Target ChEMBL ID", "n_isomers"]].dropna(axis=0)
+    r_df = df[["Smiles", 
+               "Standard Type", 
+               "Standard Relation", 
+               "Standard Value", 
+               "Standard Units", 
+               "pChEMBL Value", 
+               "Assay ChEMBL ID", 
+               "Target ChEMBL ID", 
+               "n_isomers"]].dropna(axis=0)
     r_df.index.name = "Compound_ID"
     return r_df
 
@@ -84,17 +90,18 @@ def process_target_df(df: pd.DataFrame) -> pd.DataFrame:
 def process_target_file(target_path) -> None:
     # execute args
     print("Process data in", target_path)
-    tsv = [x for x in os.listdir(args.path) if x.endswith(".tsv")]
+    tsv = [x for x in os.listdir(target_path) if x.endswith(".tsv")]
+    print(len(tsv))
     assert len(tsv) == 1
-    df = pd.read_table(pj(args.path, tsv[0]), index_col=0)
+    df = pd.read_table(pj(target_path, tsv[0]), index_col=0)
     p_df = process_target_df(df)
-    p_df.to_csv(pj(args.path, "data.txt"), sep='\t')
+    p_df.to_csv(pj(target_path, "data.txt"), sep='\t')
 
     return None
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--path", type=str, default="SampleDatasets/ChEMBL")
-    args = parser.parse_args()
-    process_target_file(args)
+    # parser = argparse.ArgumentParser()
+    # parser.add_argument("--path", type=str, default="SampleDatasets/ChEMBL")
+    # args = parser.parse_args()
+    process_target_file(target_path="SampleDatasets/ChEMBL/CHEMBL278")

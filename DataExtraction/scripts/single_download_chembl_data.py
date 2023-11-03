@@ -54,7 +54,7 @@ def download_single_target(target_ID: str, save_dir : str = "SampleDatasets/ChEM
 
     if not os.path.exists(save_dir):
         os.makedirs(os.path.join(save_dir, target_ID))
-    df_to.to_csv(os.path.join(save_dir, target_ID, "downloaded_set.tsv"), sep="\t")
+    df_to.to_csv(os.path.join(save_dir, target_ID, "py_downloaded.tsv"), sep="\t")
 
 if __name__ == "__main__":
     # parser = argparse.ArgumentParser()
