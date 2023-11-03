@@ -21,6 +21,7 @@ from rdkit.Chem.EnumerateStereoisomers import EnumerateStereoisomers, StereoEnum
 import chembl_structure_pipeline  # conda install -c conda-forge chembl_structure_pipeline
 from chembl_structure_pipeline import standardize_mol, get_parent_mol
 
+# PATH : target dir.
 #%%  Save target csv to txt
 def process_target_df(df: pd.DataFrame) -> pd.DataFrame:
     # process single DF
@@ -80,29 +81,16 @@ def process_target_df(df: pd.DataFrame) -> pd.DataFrame:
     return r_df
 
 
-def process_target_file(args):
+def process_target_file(target_path) -> None:
     # execute args
-    print("Process data in", args.path)
+    print("Process data in", target_path)
     tsv = [x for x in os.listdir(args.path) if x.endswith(".tsv")]
     assert len(tsv) == 1
     df = pd.read_table(pj(args.path, tsv[0]), index_col=0)
     p_df = process_target_df(df)
     p_df.to_csv(pj(args.path, "data.txt"), sep='\t')
 
-    # # split data for chemprop
-    # kf = KFold(n_splits=args.cv_fold, shuffle=True, random_state=2021)
-    # i_fold = 1
-    # for train_i, test_i in kf.split(p_df):
-    #     # split train / test
-    #     train_idx = p_df.index[train_i]
-    #     test_idx = p_df.index[test_i]
-
-    #     # save for chemprop
-    #     chemprop_path = check_path_exists(pj(args.path, "For_Chemprop/Fold_{}".format(i_fold)))
-    #     p_df.loc[train_idx].to_csv(pj(chemprop_path, "train.csv"))
-    #     p_df.loc[test_idx].to_csv(pj(chemprop_path, "test.csv"))
-
-    #     i_fold += 1
+    return None
 
 
 if __name__ == "__main__":

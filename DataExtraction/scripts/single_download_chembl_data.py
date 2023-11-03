@@ -2,7 +2,7 @@
 """
 Created on 10/30/2023
 
-@author: Ruibo
+@author: Ruibo & Cesar
 """
 
 import os
@@ -16,11 +16,11 @@ import numpy as np
 
 import argparse
 
-def download_single_target(args):
+def download_single_target(target_ID: str, save_dir : str = "SampleDatasets/ChEMBL"):
     target = new_client.target
     activity = new_client.activity
 
-    res = activity.filter(target_chembl_id=args.target_ID, assay_type='B', pchembl_value__isnull=False)
+    res = activity.filter(target_chembl_id=target_ID, assay_type='B', pchembl_value__isnull=False)
 
     df_from = pd.DataFrame(list(res))
     # print(df_from.columns)
@@ -52,13 +52,14 @@ def download_single_target(args):
     df_to.index = df_from['molecule_chembl_id']
     df_to.index.name = "Compound_ID"
 
-    os.makedirs(os.path.join(args.save_dir, args.target_ID))
-    df_to.to_csv(os.path.join(args.save_dir, args.target_ID, "py_downloaded.tsv"), sep="\t")
+    if not os.path.exists(save_dir):
+        os.makedirs(os.path.join(save_dir, target_ID))
+    df_to.to_csv(os.path.join(save_dir, target_ID, "downloaded_set.tsv"), sep="\t")
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--target_ID", type=str)
-    parser.add_argument("--save_dir", type=str, default="SampleDatasets/ChEMBL")
-    args = parser.parse_args()
+    # parser = argparse.ArgumentParser()
+    # parser.add_argument("--target_ID", type=str)
+    # parser.add_argument("--save_dir", type=str, default="SampleDatasets/ChEMBL")
+    # args = parser.parse_args()
 
-    download_single_target(args)
+    download_single_target(target_ID = "CHEMBL278", save_dir = "SampleDatasets/ChEMBL")
